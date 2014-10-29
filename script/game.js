@@ -1,12 +1,23 @@
-var stage, canvas, heart, img;
+var stage, canvas, heart, heart_img;
 
 function init(){
-	canvas = document.getElementById("myCanvas")
-    stage = new createjs.Stage(canvas);
-    img = new Image();
 
-    img.onload = onImageLoaded;
-    img.src = 'assets/heart.png';
+    var stageHeight = 500;
+    var stageWidth = 700;
+    var blockHeight = 70
+
+
+
+	canvas = document.getElementById("stage")
+    stage = new createjs.Stage(canvas);
+    heart_img = new Image();
+    terrain_img = new Image();
+
+  
+    terrain_img.onload = onTerrainImgLoaded;
+    heart_img.onload = onHeartImgLoaded;
+    terrain_img.src = 'assets/terrain.png'
+    heart_img.src = 'assets/heart.png';
 
     if('ontouchstart' in document.documentElement){
     	canvas.addEventListener('touchstart', function(e){
@@ -30,20 +41,32 @@ function init(){
     }
 
 
-	function onImageLoaded(e) {
-		for (var i = 0; i < 10; i++) {
-			heart = new Heart(img);
-			heart.x = i * 100;
-	    	stage.addChild(heart);
-
+	function onHeartImgLoaded(e) {
+        heart = new createjs.Bitmap(heart_img);
+		for (var i = 1; i <= 7; i++) {
+            var tempBitMap = heart.clone();
+			heart.y = 0;
+            heart.x = i * 100;
+	    	stage.addChild(tempBitMap);
 		};
 	 
-	    createjs.Ticker.setFPS(60);
+        createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
+	    createjs.Ticker.setFPS(30);
 	    createjs.Ticker.addEventListener('tick',tick);
 	}
 
-	function tick() {
-    	heart.tick();
+    function onTerrainImgLoaded(e) {
+        ground = new createjs.Bitmap(terrain_img);
+        for (i = 0; i < 10; i++) {
+            var tempBitMap = ground.clone();
+            tempBitMap.x = i * 70;
+            tempBitMap.y = stageHeight - blockHeight;
+            stage.addChild(tempBitMap);
+        };
+    };
+
+	function tick(event) {
+    	// heart.tick(event.delta);
     	stage.update();
 	}
 
