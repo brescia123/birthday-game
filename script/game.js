@@ -8,6 +8,8 @@ function init(){
 
     var stageH = stage.canvas.height;
     var stageW = stage.canvas.width;
+    var ground;
+    var clouds = [];
 
     var manifest = [
         { id:"heart_img", src:'assets/heart.png' },
@@ -58,22 +60,25 @@ function init(){
         stage.addChild(sky);
 
         //Ground
-        var ground = new createjs.Shape();
+        ground = new createjs.Shape();
         ground.graphics.beginBitmapFill(terrain_img).drawRect(0,0,stageW+groundW, groundH);
         ground.tileW = groundW;
         ground.y = stageH-groundH;
         stage.addChild(ground);
 
         //Clouds
-        var cloud = new createjs.Bitmap(cloud_img);
+        cloud = new createjs.Bitmap(cloud_img);
         var cloudHCenter = cloud.image.height / 2;
         var cloudWCenter = cloud.image.width / 2;
-        for (var i = 0; i <= 3; i++) {
-            var tempCloud = cloud.clone();
-            tempCloud.setTransform(stageW * Math.random(), stageH/6 * Math.random(), 0.5, 0.5);
-            tempCloud.shadow = new createjs.Shadow("#000000", 2, 2, 1000)
-            stage.addChild(tempCloud);
+        for (var i = 0; i < 3; i++) {
+            cloud[i] = cloud.clone();
+            cloud[i].setTransform(stageW * Math.random(), stageH/6 * Math.random(), 0.5, 0.5);
+            cloud[i].shadow = new createjs.Shadow("#000000", 2, 2, 1000)
+            stage.addChild(cloud[i]);
         }
+
+        createjs.Ticker.timingMode = createjs.Ticker.RAF;
+        createjs.Ticker.addEventListener('tick',tick);
         
 //      for (var i = 1; i <= 7; i++) {
   //          var tempBitMap = heart.clone();
@@ -95,9 +100,6 @@ function init(){
 	    	stage.addChild(tempBitMap);
 		};
 	 
-     //    createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
-	    // createjs.Ticker.setFPS(30);
-	    // createjs.Ticker.addEventListener('tick',tick);
 	}
 
     function onTerrainImgLoaded(e) {
@@ -111,7 +113,12 @@ function init(){
     };
 
 	function tick(event) {
-
+        //To make the anmation FPS indipendet
+        var deltaS = event.delta/1000;
+        ground.x = (ground.x-deltaS*200) % ground.tileW;
+        for (var i = 0; i < 3; i++) {
+            cloud[i].x = (cloud[i].x-deltaS*50*Math.random());
+        };
     	stage.update();
 	}
 
