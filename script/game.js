@@ -66,7 +66,7 @@ function init(){
     };
 
 	function tick(event) {
-    	// heart.tick(event.delta);
+        
     	stage.update();
 	}
 
