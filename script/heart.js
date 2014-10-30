@@ -16,8 +16,8 @@
 	}
 
 	// we will call this function every frame to 
-	Heart.prototype.tick = function () {
-		this.y += 2;
+	Heart.prototype.tick = function (delta) {
+		this.x -= delta/1000*100;
 	}
 
 	// this will reset the position of the Heart
