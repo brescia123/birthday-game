@@ -21,6 +21,7 @@ function init(){
         height : stage.canvas.height,
         width : stage.canvas.width
     };
+    var won = false;
     var tickCount = 0;
     var cloud_img;
     var sky_img;
@@ -174,7 +175,7 @@ function init(){
     function initGift (gift_img) {
         gift = new createjs.Bitmap(gift_img);
         gift.x = 700;
-        gift.y = 10;
+        gift.y = 300;
         heartsConteiner.addChild(gift); 
 
     }
@@ -223,10 +224,22 @@ function init(){
         stage.addChild(ground);
     }
 
+    function win () {
+        stage.removeAllChildren();
+        stage.update();
+        won = true;
+    }
+
 	function tick(event) {
         tickCount++;
         //To make the anmation FPS indipendet
         var deltaS = event.delta/1000*100;
+
+        if(ndgmr.checkRectCollision(cami, gift)){
+            createjs.Ticker.removeEventListener('tick',tick);
+            win();
+            return;
+        }
 
 
         if(animateHearts(gravity, tickCount, cami)){
