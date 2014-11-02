@@ -10,6 +10,13 @@ function init(){
 	canvas = document.getElementById("stage");
     stage = new createjs.Stage(canvas);
 
+    //prevent scroll with arrows
+    window.addEventListener("keydown", function(e) {
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    }, false);
+
     var stageDim = {
         height : stage.canvas.height,
         width : stage.canvas.width
@@ -23,9 +30,15 @@ function init(){
     var towerVisible = false;
     var clouds = [];
     var cami;
+    var heart;
+    var gravity = 1.2;
     var movingDelta = 10;
+    var yVel = 0;
     var absolutePos = 0;
-    var movingLeft = false, movingRight = false;
+    var camiGround;
+    var groundW;
+    var groundH;
+    var movingLeft = false, movingRight = false, isJumping = false;
 
     var manifest = [
         { id:"heart_img", src:'assets/heart.png' },
@@ -64,6 +77,7 @@ function init(){
                 movingRight = true;
                 break;
             case KEYCODE_UP: 
+                jump();
                 break;
             case KEYCODE_DOWN: 
                 break;
@@ -84,29 +98,21 @@ function init(){
                 break;
         }
     }
+
+    function jump() {
+        if (isJumping == false) {
+            yVel = -15;
+            isJumping = true;
+        }
+    }
+
     function onLoadComplete(){
 
         heart_img = queue.getResult("heart_img", true);
         terrain_img = queue.getResult("terrain_img", true);
         sky_img = queue.getResult("sky_img", true);
         cloud_img = queue.getResult("cloud_img", true);
-        cami = queue.getResult("cami", true);
-
-
-        var ss = new createjs.SpriteSheet({
-            // "animations":{
-            //     "run": [0, 25, "jump"],
-            //     "jump": [26, 63, "run"]
-            //     },
-            "images": [cami],
-            "frames":
-                {
-                    "height": 70,
-                    "width":38,
-                    "regX": 0,
-                    "regY": 0                }
-            });
-
+        cami_img = queue.getResult("cami", true);
 
         //Sky
         var sky = new createjs.Shape();
@@ -120,7 +126,7 @@ function init(){
         initClouds(7);
 
         //Cami
-        initCharacter(ss);
+        initCharacter(cami_img);
 
         createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
         createjs.Ticker.addEventListener('tick',tick);
@@ -130,9 +136,12 @@ function init(){
     }
 
     function initCharacter (character) {
-            cami = new createjs.Sprite(character);
+
+            camiGround = stageDim.height - groundH - cami_img.height;
+            cami = new Cami(cami_img);
+            console.log(camiGround);
             cami.x = stageDim.width / 2 - 19;
-            cami.y = stageDim.height - ground.tileH - 70;
+            cami.y = camiGround;
             cami.framerate = 30;
 
             // Add Grant to the stage, and add it as a listener to Ticker to get updates each frame.
@@ -157,8 +166,8 @@ function init(){
     }
 
     function initGround () {
-        var groundH = terrain_img.height;
-        var groundW = terrain_img.width;
+        groundH = terrain_img.height;
+        groundW = terrain_img.width;
 
         ground = new createjs.Shape();
         ground.graphics.beginBitmapFill(terrain_img).drawRect(-groundW, 0, stageDim.width + groundW*2, groundH);
@@ -167,6 +176,12 @@ function init(){
         tower.graphics.beginBitmapFill(terrain_img).drawRect(stageDim.width *2, 70, terrain_img.width , groundH*4);
         tower.y = stageDim.height-groundH*6;
         stage.addChild(tower);
+
+        heart = new Heart(heart_img);
+        heart.x = 200;
+        heart.y = 100;
+        stage.addChild(heart);
+
         
         ground.tileW = groundW;
         ground.tileH = groundH;
@@ -177,6 +192,7 @@ function init(){
 	function tick(event) {
         //To make the anmation FPS indipendet
         var deltaS = event.delta/1000;
+        heart.fall(movingDelta);
 
         if(movingLeft){
             if(cami.x >= 70){
@@ -190,7 +206,9 @@ function init(){
             
         };
         if(movingRight){
-            console.log(ndgmr.checkPixelCollision(cami,tower));
+            if(ndgmr.checkRectCollision(cami,heart)){
+                stage.removeChild(heart);
+            }
             if(cami.x <= stageDim.width - 108){
                 cami.x += movingDelta;
             }else{
@@ -201,17 +219,19 @@ function init(){
             }
             
         }
-
-        if(absolutePos >= 50){
-            towerVisible = true;
+        if (isJumping) {
+            yVel += gravity;
+            cami.y += yVel;
         
-
-        }else{
-            towerVisible = false;
+            if (cami.y > camiGround) {
+                cami.y = camiGround;
+                yVel = 0;
+                isJumping = false;
+            }
         }
+
     	stage.update();
 	}
-
 
 
 

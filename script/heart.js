@@ -17,7 +17,7 @@
 
 	// we will call this function every frame to 
 	Heart.prototype.fall = function (delta) {
-		this.y -= delta/1000*100;
+		this.y += delta/1000*100;
 	}
 
 	// this will reset the position of the Heart
