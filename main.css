@@ -1,4 +1,33 @@
-#stage{
+body{
+/*background: 
+linear-gradient(135deg, #BB0033 25%, transparent 25%) -50px 0,
+linear-gradient(225deg, #BB0033 25%, transparent 25%) -50px 0,
+linear-gradient(315deg, #BB0033 25%, transparent 25%),
+linear-gradient(45deg, #BB0033 25%, transparent 25%);	
+background-size: 100px 100px;*/
+background-color: #5677FC;
+}
+
+#game{
   	border-style: solid;
     border-width: 1px;
+}
+@font-face {
+		font-family: 'mickey';
+		src: url('font/MICKEY.TTF'); /* IE9 Compat Modes */
+		src: url('font/MICKEY.TTF') format('embedded-opentype'), /* IE6-IE8 */
+   		url('font/MICKEY.TTF') format('woff'), /* Modern Browsers */
+   		url('font/MICKEY.TTF')  format('truetype'), /* Safari, Android, iOS */
+   		url('font/MICKEY.TTF') format('svg'); /* Legacy iOS */
+}
+
+.text{
+
+}
+
+#happy_birthday{
+	    margin-left: 100px;
+    	margin-right: 100px;
+    	margin-top: 270px;
+    	margin-bottom: 200px;
 }

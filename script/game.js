@@ -2,12 +2,15 @@ var stage, canvas, heart, heart_img;
 
 function init(){
 
+
+    window.sr = new scrollReveal();
+
     var KEYCODE_LEFT = 37, 
         KEYCODE_RIGHT = 39,
         KEYCODE_UP = 38, 
         KEYCODE_DOWN = 40;
 
-	canvas = document.getElementById("stage");
+	canvas = document.getElementById("game");
     stage = new createjs.Stage(canvas);
 
     //prevent scroll with arrows
@@ -21,6 +24,7 @@ function init(){
         height : stage.canvas.height,
         width : stage.canvas.width
     };
+    var queue;
     var won = false;
     var tickCount = 0;
     var cloud_img;
@@ -58,10 +62,44 @@ function init(){
     ];
 
 
+    function initButton () {
+        var background = new createjs.Shape();
+        background.name = "background";
+        background.graphics.beginFill("red").drawRoundRect(0, 0, 150, 60, 10);
+        
+        var label = new createjs.Text("PROVACI!", "bold 24px Arial", "#FFFFFF");
+        label.name = "label";
+        label.textAlign = "center";
+        label.textBaseline = "middle";
+        label.x = 150/2;
+        label.y = 60/2;
+        
+        var button = new createjs.Container();
+        button.name = "button";
+        button.x = 275;
+        button.y = 220;
+        button.addChild(background, label);
+        // setting mouseChildren to false will cause events to be dispatched directly from the button instead of its children.
+        // button.mouseChildren = false;
 
-    var queue = new createjs.LoadQueue(false);
-    queue.on("complete", onLoadComplete, this);
-    queue.loadManifest(manifest);
+        var targets = [stage,button,label,background];
+        for (var i=0; i<targets.length; i++) {
+            var target = targets[i];
+            target.on("click", startGame, false);
+            target.on("click", startGame, true);
+        }
+        
+        stage.addChild(button);
+        stage.update();
+    }
+
+    function startGame () {
+        queue = new createjs.LoadQueue(false);
+        queue.on("complete", onLoadComplete, this);
+        queue.loadManifest(manifest);
+    }
+
+
 
 
     if('ontouchstart' in document.documentElement){
@@ -107,6 +145,8 @@ function init(){
                 break;
         }
     }
+
+    initButton();
 
     function jump() {
         if (isJumping == false) {
@@ -175,7 +215,7 @@ function init(){
     function initGift (gift_img) {
         gift = new createjs.Bitmap(gift_img);
         gift.x = 700;
-        gift.y = 300;
+        gift.y = 10;
         heartsConteiner.addChild(gift); 
 
     }
