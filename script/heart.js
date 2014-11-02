@@ -4,6 +4,7 @@
 	}
 	
 	var delta = 2;
+	this.falling;
 
 	Heart.prototype = new createjs.Bitmap();
 
@@ -16,10 +17,12 @@
 		this.Bitmap_initialize(image);
 		this.name = 'Heart';
 		this.snapToPixel = true;
+		this.falling = false;
 	}
 
 	// we will call this function every frame to 
 	Heart.prototype.fall = function (gravity) {
+		this.falling = true;
 		if(delta < 40){
 			delta += gravity;
 		}
@@ -29,7 +32,8 @@
 	// this will reset the position of the Heart
 	// we can call this e.g. whenever a key is pressed
 	Heart.prototype.reset = function() {
-		this.y = 0;
+		this.falling = false;
+		this.y = -this.image.height;
 	}
 
 	window.Heart = Heart;

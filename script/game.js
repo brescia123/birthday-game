@@ -21,23 +21,29 @@ function init(){
         height : stage.canvas.height,
         width : stage.canvas.width
     };
+    var tickCount = 0;
     var cloud_img;
     var sky_img;
     var heart_img;
     var terrain_img;    
+    var gift_img;  
+    var sun_img  
     var ground;
-    var tower;
-    var towerVisible = false;
+    var heartsConteiner;
     var clouds = [];
+    var sunn;
     var cami;
     var heart;
-    var gravity = 1.2;
+    var gift;
+    var pointsText;
+    var gravity = 1;
     var movingDelta = 2;
     var yVel = 0;
     var absolutePos = 0;
     var camiGround;
     var groundW;
     var groundH;
+    var world = 0;
     var movingLeft = false, movingRight = false, isJumping = false;
 
     var manifest = [
@@ -46,6 +52,8 @@ function init(){
         { id:"sky_img", src:"assets/sky.png"},
         { id:"cloud_img", src:"assets/cloud2.png"},
         { id:"cami", src:"assets/cami.png"},
+        { id:"gift_img", src:"assets/gift.png"},
+        { id:"sun_img", src:"assets/sun.png"},
     ];
 
 
@@ -113,6 +121,8 @@ function init(){
         sky_img = queue.getResult("sky_img", true);
         cloud_img = queue.getResult("cloud_img", true);
         cami_img = queue.getResult("cami", true);
+        gift_img = queue.getResult("gift_img", true);
+        sun_img = queue.getResult("sun_img", true);
 
         //Sky
         var sky = new createjs.Shape();
@@ -122,11 +132,27 @@ function init(){
         //Ground
         initGround(terrain_img);
 
+        //sun
+        var sunn = new createjs.Bitmap(sun_img);
+        sunn.x = 400;
+        sunn.y = 10;
+        stage.addChild(sunn);
+        
         //Clouds
         initClouds(7);
 
         //Cami
-        initCharacter(cami_img);
+        initCharacter("assets/cami.png");
+
+        heartsConteiner = initHearts(7, heart_img, stageDim, stage,pointsText);
+        stage.addChild(heartsConteiner);
+
+        //Gift
+        initGift(gift_img);
+
+        //points
+        initPointsText();
+
 
         createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
         createjs.Ticker.addEventListener('tick',tick);
@@ -136,18 +162,34 @@ function init(){
         stage.update();
     }
 
+    function initPointsText () {
+        pointsText = new createjs.Text(cami.points,"40px Impact", "#006FF6")
+        pointsText.shadow = new createjs.Shadow("#000000", 1, 1, 500); 
+        pointsText.x = 10;
+        pointsText.y = 10;
+        stage.addChild(pointsText);
+    }
+
+
+    function initGift (gift_img) {
+        gift = new createjs.Bitmap(gift_img);
+        gift.x = 700;
+        gift.y = 10;
+        heartsConteiner.addChild(gift); 
+
+    }
+
     function initCharacter (character) {
+        camiGround = stageDim.height - groundH - cami_img.height;
+        cami = new Cami(character);
+        cami.x = stageDim.width / 2 - 19;
+        cami.y = camiGround;
+        cami.framerate = 30;
+        cami.setBounds(10,10,50,70);
 
-            camiGround = stageDim.height - groundH - cami_img.height;
-            cami = new Cami(cami_img);
-            console.log(camiGround);
-            cami.x = stageDim.width / 2 - 19;
-            cami.y = camiGround;
-            cami.framerate = 30;
-
-            // Add Grant to the stage, and add it as a listener to Ticker to get updates each frame.
-            stage.addChild(cami);
-            stage.update();
+        // Add Grant to the stage, and add it as a listener to Ticker to get updates each frame.
+        stage.addChild(cami);
+        stage.update();
     }
 
     function initClouds (num) {
@@ -173,15 +215,6 @@ function init(){
         ground = new createjs.Shape();
         ground.graphics.beginBitmapFill(terrain_img).drawRect(-groundW, 0, stageDim.width + groundW*2, groundH);
         
-        tower = new createjs.Shape();
-        tower.graphics.beginBitmapFill(terrain_img).drawRect(stageDim.width *2, 70, terrain_img.width , groundH*4);
-        tower.y = stageDim.height-groundH*6;
-        stage.addChild(tower);
-
-        heart = new Heart(heart_img);
-        heart.x = 200;
-        heart.y = 100;
-        stage.addChild(heart);
 
         
         ground.tileW = groundW;
@@ -191,15 +224,22 @@ function init(){
     }
 
 	function tick(event) {
+        tickCount++;
         //To make the anmation FPS indipendet
         var deltaS = event.delta/1000*100;
-        heart.fall(gravity);
+
+
+        if(animateHearts(gravity, tickCount, cami)){
+            pointsText.text = cami.points;
+        };
+
         if(movingLeft){
             if(cami.x >= 70){
                 cami.x -= movingDelta * deltaS;
-            }else{
-                tower.x += movingDelta * deltaS;
+            }else if(world >= 0){
+                world--;
                 ground.x = (ground.x+10) % ground.tileW;
+                heartsConteiner.x = (heartsConteiner.x + 10);
                 Array.prototype.map.call(clouds, function (x) {x.move(5)});
             }
             
@@ -207,15 +247,17 @@ function init(){
         if(movingRight){
             if(cami.x <= stageDim.width - 108){
                 cami.x += movingDelta * deltaS;
-            }else{
-                tower.x -= movingDelta * deltaS;
+            }else if(world <= 20){
+                world++;
                 ground.x = (ground.x-10) % ground.tileW;
+                heartsConteiner.x = (heartsConteiner.x - 10);
                 Array.prototype.map.call(clouds, function (x) {x.move(-5)});
             }
             
         }
         if (isJumping) {
             yVel += gravity;
+            yVel -= cami.points/1000;
             cami.y += yVel * deltaS;
         
             if (cami.y > camiGround) {
