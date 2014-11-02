@@ -19,8 +19,13 @@ function init(){
     var heart_img;
     var terrain_img;    
     var ground;
+    var tower;
+    var towerVisible = false;
     var clouds = [];
     var cami;
+    var movingDelta = 10;
+    var absolutePos = 0;
+    var movingLeft = false, movingRight = false;
 
     var manifest = [
         { id:"heart_img", src:'assets/heart.png' },
@@ -46,16 +51,32 @@ function init(){
 			}, false);	
     }
     else{
-    	 document.onkeydown = keyPressed;
+    	 document.onkeydown = keyDown;
+         document.onkeyup = keyUp;
     }
 
-    function keyPressed(event){
+    function keyDown(event){
         switch(event.keyCode){
             case KEYCODE_LEFT:
-                moveLeft();
+                movingLeft = true;
                 break;
             case KEYCODE_RIGHT:
-                moveRight(); 
+                movingRight = true;
+                break;
+            case KEYCODE_UP: 
+                break;
+            case KEYCODE_DOWN: 
+                break;
+        }
+    } 
+
+    function keyUp(event){
+        switch(event.keyCode){
+            case KEYCODE_LEFT:
+                movingLeft = false;
+                break;
+            case KEYCODE_RIGHT:
+                movingRight = false;
                 break;
             case KEYCODE_UP: 
                 break;
@@ -63,21 +84,6 @@ function init(){
                 break;
         }
     }
-
-    function moveLeft(){
-        cami.x -= 50;
-        // ground.x = (ground.x+10) % ground.tileW;
-        // Array.prototype.map.call(clouds, function (x) {x.move(5)});
-        stage.update();
-    }
-
-    function moveRight(){
-        cami.x += 50;
-        // ground.x = (ground.x-10) % ground.tileW;
-        // Array.prototype.map.call(clouds, function (x) {x.move(-5)});
-        stage.update();
-    }
-
     function onLoadComplete(){
 
         heart_img = queue.getResult("heart_img", true);
@@ -125,13 +131,13 @@ function init(){
 
     function initCharacter (character) {
             cami = new createjs.Sprite(character);
-            cami.x = 100;
+            cami.x = stageDim.width / 2 - 19;
             cami.y = stageDim.height - ground.tileH - 70;
+            cami.framerate = 30;
 
             // Add Grant to the stage, and add it as a listener to Ticker to get updates each frame.
             stage.addChild(cami);
             stage.update();
-
     }
 
     function initClouds (num) {
@@ -156,6 +162,12 @@ function init(){
 
         ground = new createjs.Shape();
         ground.graphics.beginBitmapFill(terrain_img).drawRect(-groundW, 0, stageDim.width + groundW*2, groundH);
+        
+        tower = new createjs.Shape();
+        tower.graphics.beginBitmapFill(terrain_img).drawRect(stageDim.width *2, 70, terrain_img.width , groundH*4);
+        tower.y = stageDim.height-groundH*6;
+        stage.addChild(tower);
+        
         ground.tileW = groundW;
         ground.tileH = groundH;
         ground.y = stageDim.height-groundH;
@@ -166,14 +178,42 @@ function init(){
         //To make the anmation FPS indipendet
         var deltaS = event.delta/1000;
 
-        // for (var i = 0; i < 3; i++) {
-        //     cloud[i].x = (cloud[i].x-deltaS*50*Math.random());
-        // };
+        if(movingLeft){
+            if(cami.x >= 70){
+                cami.x -= movingDelta;
+            }else{
+                absolutePos -= movingDelta;
+                tower.x += movingDelta;
+                ground.x = (ground.x+10) % ground.tileW;
+                Array.prototype.map.call(clouds, function (x) {x.move(5)});
+            }
+            
+        };
+        if(movingRight){
+            console.log(ndgmr.checkPixelCollision(cami,tower));
+            if(cami.x <= stageDim.width - 108){
+                cami.x += movingDelta;
+            }else{
+                absolutePos += movingDelta;
+                tower.x -= movingDelta;
+                ground.x = (ground.x-10) % ground.tileW;
+                Array.prototype.map.call(clouds, function (x) {x.move(-5)});
+            }
+            
+        }
 
-        //ground.x = (ground.x-10) % ground.tileW;
-        //console.log(ground.x)
-    	//stage.update();
+        if(absolutePos >= 50){
+            towerVisible = true;
+        
+
+        }else{
+            towerVisible = false;
+        }
+    	stage.update();
 	}
+
+
+
 
     stage.update();
 }
