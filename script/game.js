@@ -32,7 +32,7 @@ function init(){
     var cami;
     var heart;
     var gravity = 1.2;
-    var movingDelta = 10;
+    var movingDelta = 2;
     var yVel = 0;
     var absolutePos = 0;
     var camiGround;
@@ -101,7 +101,7 @@ function init(){
 
     function jump() {
         if (isJumping == false) {
-            yVel = -15;
+            yVel = -6;
             isJumping = true;
         }
     }
@@ -130,6 +130,7 @@ function init(){
 
         createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
         createjs.Ticker.addEventListener('tick',tick);
+        createjs.Ticker.setFPS(45);
 
 
         stage.update();
@@ -191,29 +192,23 @@ function init(){
 
 	function tick(event) {
         //To make the anmation FPS indipendet
-        var deltaS = event.delta/1000;
-        heart.fall(movingDelta);
-
+        var deltaS = event.delta/1000*100;
+        heart.fall(gravity);
         if(movingLeft){
             if(cami.x >= 70){
-                cami.x -= movingDelta;
+                cami.x -= movingDelta * deltaS;
             }else{
-                absolutePos -= movingDelta;
-                tower.x += movingDelta;
+                tower.x += movingDelta * deltaS;
                 ground.x = (ground.x+10) % ground.tileW;
                 Array.prototype.map.call(clouds, function (x) {x.move(5)});
             }
             
         };
         if(movingRight){
-            if(ndgmr.checkRectCollision(cami,heart)){
-                stage.removeChild(heart);
-            }
             if(cami.x <= stageDim.width - 108){
-                cami.x += movingDelta;
+                cami.x += movingDelta * deltaS;
             }else{
-                absolutePos += movingDelta;
-                tower.x -= movingDelta;
+                tower.x -= movingDelta * deltaS;
                 ground.x = (ground.x-10) % ground.tileW;
                 Array.prototype.map.call(clouds, function (x) {x.move(-5)});
             }
@@ -221,7 +216,7 @@ function init(){
         }
         if (isJumping) {
             yVel += gravity;
-            cami.y += yVel;
+            cami.y += yVel * deltaS;
         
             if (cami.y > camiGround) {
                 cami.y = camiGround;

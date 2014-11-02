@@ -2,6 +2,9 @@
 	function Heart(image) {
 		this.initialize(image);
 	}
+	
+	var delta = 2;
+
 	Heart.prototype = new createjs.Bitmap();
 
 	// save the original initialize-method so it won't be gone after
@@ -16,8 +19,11 @@
 	}
 
 	// we will call this function every frame to 
-	Heart.prototype.fall = function (delta) {
-		this.y += delta/1000*100;
+	Heart.prototype.fall = function (gravity) {
+		if(delta < 40){
+			delta += gravity;
+		}
+		this.y += delta/1000*100;		
 	}
 
 	// this will reset the position of the Heart
