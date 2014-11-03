@@ -5,9 +5,9 @@ function init(){
 
     window.sr = new scrollReveal();
 
-    var KEYCODE_LEFT = 37, 
-        KEYCODE_RIGHT = 39,
-        KEYCODE_UP = 38, 
+    var KEYCODE_LEFT = 65, 
+        KEYCODE_RIGHT = 68,
+        KEYCODE_UP = 87, 
         KEYCODE_DOWN = 40;
 
 	canvas = document.getElementById("game");
