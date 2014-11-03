@@ -215,7 +215,7 @@ function init(){
     function initGift (gift_img) {
         gift = new createjs.Bitmap(gift_img);
         gift.x = 700;
-        gift.y = 10;
+        gift.y = 400;
         heartsConteiner.addChild(gift); 
 
     }
@@ -263,9 +263,23 @@ function init(){
         ground.y = stageDim.height-groundH;
         stage.addChild(ground);
     }
+    function notif() {
+        console.log("bella");
+    }
 
     function win () {
-        stage.removeAllChildren();
+        var win_bg = new createjs.Shape();
+        win_bg.name = "win_bg";
+        win_bg.graphics.beginLinearGradientFill(["#E91E63","#FF5722"], [0, 1], stageDim.width/2, 0, stageDim.width/2, stageDim.height).drawRect(0, 0, stageDim.width, stageDim.height);
+        win_bg.alphs = 0.5;
+        gift.x = stageDim.width/2 - gift_img.width/2;
+        gift.y = stageDim.height/2 - gift_img.height/2;
+        gift.on("click", notif, false);
+
+        stage.addChild(win_bg);
+        stage.addChild(gift);
+
+
         stage.update();
         createjs.Ticker.removeEventListener('tick',tick);
         won = true;
