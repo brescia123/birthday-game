@@ -5,7 +5,11 @@ linear-gradient(225deg, #BB0033 25%, transparent 25%) -50px 0,
 linear-gradient(315deg, #BB0033 25%, transparent 25%),
 linear-gradient(45deg, #BB0033 25%, transparent 25%);	
 background-size: 100px 100px;*/
-background-color: #5677FC;
+background-image: url('assets/bg.png');
+background-repeat: no-repeat;
+    background-size: cover;
+
+
 }
 
 #game{
