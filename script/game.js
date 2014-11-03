@@ -215,7 +215,7 @@ function init(){
     function initGift (gift_img) {
         gift = new createjs.Bitmap(gift_img);
         gift.x = 700;
-        gift.y = 400;
+        gift.y = 10;
         heartsConteiner.addChild(gift); 
 
     }
