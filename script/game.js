@@ -267,6 +267,10 @@ function init(){
         console.log("bella");
     }
 
+    function goToLink () {
+        window.location = "http://www.orientalbazar.it/product-category/gonne/";
+    }
+
     function win () {
         var win_bg = new createjs.Shape();
         win_bg.name = "win_bg";
@@ -274,7 +278,7 @@ function init(){
         win_bg.alphs = 0.5;
         gift.x = stageDim.width/2 - gift_img.width/2;
         gift.y = stageDim.height/2 - gift_img.height/2;
-
+        gift.on("click", goToLink, false);
         stage.addChild(win_bg);
         stage.addChild(gift);
 
