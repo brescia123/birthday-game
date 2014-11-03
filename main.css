@@ -22,12 +22,43 @@ background-color: #5677FC;
 }
 
 .text{
+	text-align: center;
+	font-family: proxima-nova-1, proxima-nova-2, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 80px;
+    color: #FFF;
+	font-weight: bold;
+	left: -6px;
+    top: -6px;
+}
+
+.text1{
+	text-shadow: #E91E63 1px 1px, #E91E63 2px 2px, #E91E63 3px 3px, #E91E63 4px 4px, #E91E63 5px 5px, #E91E63 6px 6px;
+}
+.text3{
+    text-shadow: #259B24 1px 1px, #259B24 2px 2px, #259B24 3px 3px, #259B24 4px 4px, #259B24 5px 5px, #259B24 6px 6px;
+}
+.text2{
+    text-shadow: #ffeb3b 1px 1px, #ffeb3b 2px 2px, #ffeb3b 3px 3px, #ffeb3b 4px 4px, #ffeb3b 5px 5px, #ffeb3b 6px 6px;
 
 }
 
-#happy_birthday{
-	    margin-left: 100px;
-    	margin-right: 100px;
-    	margin-top: 270px;
-    	margin-bottom: 200px;
+.spacer {
+    margin-top: 80px;
+}
+
+.spacer-big {
+    margin-top: 400px;
+}
+
+.img-responsive {
+    margin: 0 auto;
+}
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.happy-birthday{
+	margin-top: 200px;
+	margin-bottom: 300px;
 }

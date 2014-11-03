@@ -267,6 +267,7 @@ function init(){
     function win () {
         stage.removeAllChildren();
         stage.update();
+        createjs.Ticker.removeEventListener('tick',tick);
         won = true;
     }
 
@@ -276,7 +277,6 @@ function init(){
         var deltaS = event.delta/1000*100;
 
         if(ndgmr.checkRectCollision(cami, gift)){
-            createjs.Ticker.removeEventListener('tick',tick);
             win();
             return;
         }

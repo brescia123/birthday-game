@@ -3,6 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
     <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
     <script src="http://code.createjs.com/preloadjs-0.4.1.min.js"></script>
     <script src="http://code.createjs.com/tweenjs-0.5.1.min.js"></script>
@@ -18,16 +19,35 @@
 
     <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
 </head>
-<body onload="init()">
+<body onload="init()" id="page-top" class="index">
 
-    <img id="happy_birthday" data-sr="enter bottom" src="assets/BUON-COMPLEANNO.png"></img>
-    <img id="bottom" data-sr="wait 3s enter bottom" src="assets/bottom3.png"></img>
-    <p data-sr="wait 1s enter bottom" class="text">So che tu vuoi il regalo....</p>
-    <p data-sr="wait 1s enter bottom" class="text">.......</p>
-    <p data-sr="wait 1s enter bottom" class="text">Ma devi guadagnartelo!!!</p>
+        <div class="spacer"></div>
 
-    <canvas data-sr="enter bottom" id="game" width="700" height="500">
-        Problem
-    </canvas>
+        <div class="container-fluid" data-sr="enter bottom and scale up 70% over 1s">
+            <div class="row">    
+                <div class="col-md-12">
+                    <img class="img-responsive" src="assets/hb.ong.png" alt="">
+                </div>           
+            </div>
+        </div>
+
+    <div class="spacer-big"></div>
+
+    <p data-sr="enter bottom over 2s" class="text text2">AUGURI AMORE!!!</p>
+    <div class="spacer-big"></div>
+    <p data-sr="enter bottom over 2s" class="text text1">TI AMO!!!</p>
+    <div class="spacer-big"></div>
+    <p data-sr="enter bottom over 2s" class="text text3">SO CHE ORA TU VUOI IL REGALO...</p>
+    <div class="spacer-big"></div>
+    <p data-sr="enter left please, and hustle 20px over 2s" class="text text2">.......</p>
+    <div class="spacer-big"></div>
+    <p data-sr="enter left please, and hustle 20px over 2s" class="text text1">MA DEVI GUADAGNARTELO!!!</p>
+    <div class="spacer-big"></div>
+    <div class="row">
+        <canvas class="img-responsive" data-sr="enter bottom" id="game" width="700" height="500">
+            Problem
+        </canvas>
+    </div>
+    <div class="spacer"></div>
 </body>
 </html>
